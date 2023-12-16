@@ -1,10 +1,17 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from corsheaders import corsheaders
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = ["https://suryanshroy.github.io"]
 
 app = FastAPI()
-
-app = corsheaders(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Hospital(BaseModel):
     id: int
@@ -22,6 +29,7 @@ hospitals = {
     1: Hospital(id=1, name="AIIMS"),
     2: Hospital(id=2, name="IGIMS"),
     3: Hospital(id=3, name="PMCH"),
+    4: Hospital(id=4, name='Paras')
 }
 
 bed_types = {
@@ -43,14 +51,11 @@ bed_availabilities = {
     (3, 1): BedAvailability(total_beds=88, available_beds=60),
     (3, 2): BedAvailability(total_beds=49, available_beds=38),
     (3, 3): BedAvailability(total_beds=75, available_beds=68),
+    #Paras
+    (4, 1): BedAvailability(total_beds=90, available_beds=680),
+    (4, 2): BedAvailability(total_beds=66, available_beds=55),
+    (4, 3): BedAvailability(total_beds=106, available_beds=83),
 }
-@app.get("/")
-def root():
-    return {"message": "Hello World!"}
-
-@app.get("/protected")
-def protected():
-    return {"message": "This is a protected route"}
 
 @app.get("/hospitals")
 async def get_all_hospitals():
@@ -82,7 +87,3 @@ async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
             if bed_availability_key in bed_availabilities:
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
-
-app.config["CORS_ORIGINS"] = ["https://suryanshroy.github.io"]
-app.config["CORS_METHODS"] = ["GET", "POST"]
-app.config["CORS_HEADERS"] = ["Content-Type", "Authorization"]
