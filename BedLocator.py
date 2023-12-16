@@ -1,7 +1,10 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
+from corsheaders import corsheadrs
 
 app = FastAPI()
+
+app = corsheaders(app)
 
 class Hospital(BaseModel):
     id: int
@@ -41,6 +44,13 @@ bed_availabilities = {
     (3, 2): BedAvailability(total_beds=49, available_beds=38),
     (3, 3): BedAvailability(total_beds=75, available_beds=68),
 }
+@app.get("/")
+def root():
+    return {"message": "Hello World!"}
+
+@app.get("/protected")
+def protected():
+    return {"message": "This is a protected route"}
 
 @app.get("/hospitals")
 async def get_all_hospitals():
@@ -72,3 +82,7 @@ async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
             if bed_availability_key in bed_availabilities:
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
+
+app.config["CORS_ORIGINS"] = ["https://suryanshroy.github.io"]
+app.config["CORS_METHODS"] = ["GET", "POST"]
+app.config["CORS_HEADERS"] = ["Content-Type", "Authorization"]
