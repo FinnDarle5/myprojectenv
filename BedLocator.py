@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from corsheaders import corsheadrs
+from corsheaders import corsheaders
 
 app = FastAPI()
 
