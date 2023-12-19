@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 app.add_middleware(
@@ -86,8 +86,17 @@ async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
 
-@app.get("/{hospital_name}/{bed_type_name}")
+@app.get("/{hospital_name}&{bed_type_name}")
 async def get_bed_availability_by_type_2(hospital_name: str, bed_type_name: str):
+    for bed_type_id, bed_type in bed_types.items():
+        if bed_type.name == bed_type_name:
+            bed_availability_key = (hospital_name, bed_type_id)
+            if bed_availability_key in bed_availabilities:
+                return bed_availabilities[bed_availability_key]
+    return {"message": "Bed information not available"}
+
+@app.get("/?Name={hospital_name}&Bed_type={bed_type_name}")
+async def get_bed_availability_by_type_3(hospital_name: str, bed_type_name: str):
     for bed_type_id, bed_type in bed_types.items():
         if bed_type.name == bed_type_name:
             bed_availability_key = (hospital_name, bed_type_id)
