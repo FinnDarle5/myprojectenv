@@ -2,12 +2,13 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-origins = ["https://suryanshroy.github.io"]
+origins = ['file:///C:/Users/itisa/PycharmProjects/FastAPI/myprojectenv/index.html']
+
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
