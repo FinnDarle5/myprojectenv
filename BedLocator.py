@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust allowed origins based on your security needs
+    allow_origins=["http://suryanshroy.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -67,3 +67,41 @@ async def check_bed_Availability(request: BedAvailabilityRequest):
 
     bed_availability_key = (hospital_name, bed_type)
     return bed_availabilities[bed_availability_key]
+
+@app.get("/hospitals")
+async def get_all_hospitals():
+    return list(hospitals.values())
+
+@app.get("/hospitals/{hospital_id}")
+async def get_hospital(hospital_id: int):
+    if hospital_id not in hospitals:
+        return {"message": "Hospital not found"}
+    return hospitals[hospital_id]
+
+@app.get("/bedtypes")
+async def get_all_bed_types():
+    return list(bed_types.values())
+
+@app.get("/hospitals/{hospital_id}/beds")
+async def get_all_bed_availability(hospital_id: int):
+    available_beds = {}
+    for (hospital_id_, bed_type_id), bed_availability in bed_availabilities.items():
+        if hospital_id_ == hospital_id:
+            available_beds[bed_types[bed_type_id].name] = bed_availability
+    return available_beds if available_beds else {"message": "Bed information not available"}
+
+@app.get("/hospitals/{hospital_id}/beds/{bed_type_name}")
+async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
+    for bed_type_id, bed_type in bed_types.items():
+        if bed_type.name == bed_type_name:
+            bed_availability_key = (hospital_id, bed_type_id)
+            if bed_availability_key in bed_availabilities:
+                return bed_availabilities[bed_availability_key]
+    return {"message": "Bed information not available"}
+
+
+
+
+
+
+
