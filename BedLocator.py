@@ -74,23 +74,10 @@ async def check_bed_Availability(request: BedAvailabilityRequest):
 async def get_all_hospitals():
     return list(hospitals.values())
 
-@app.get("/hospitals/{hospital_id}")
-async def get_hospital(hospital_id: int):
-    if hospital_id not in hospitals:
-        return {"message": "Hospital not found"}
-    return hospitals[hospital_id]
 
 @app.get("/bedtypes")
 async def get_all_bed_types():
     return list(bed_types.values())
-
-@app.get("/hospitals/{hospital_id}/beds")
-async def get_all_bed_availability(hospital_id: int):
-    available_beds = {}
-    for (hospital_id_, bed_type_id), bed_availability in bed_availabilities.items():
-        if hospital_id_ == hospital_id:
-            available_beds[bed_types[bed_type_id].name] = bed_availability
-    return available_beds if available_beds else {"message": "Bed information not available"}
 
 @app.get("/{hospital_name}/{bed_type_name}")
 async def get_bed_availability_by_type(hospital_name: int, bed_type_name: str):
@@ -100,10 +87,3 @@ async def get_bed_availability_by_type(hospital_name: int, bed_type_name: str):
             if bed_availability_key in bed_availabilities:
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
-
-
-
-
-
-
-
