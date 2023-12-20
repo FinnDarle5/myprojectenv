@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://suryanshroy.github.io"],
+    allow_origins=["https://suryanshroy.github.io/BedLocator/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -98,3 +98,10 @@ async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
             if bed_availability_key in bed_availabilities:
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
+
+
+
+
+
+
+
