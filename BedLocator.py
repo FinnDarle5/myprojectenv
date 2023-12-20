@@ -90,11 +90,11 @@ async def get_all_bed_availability(hospital_id: int):
             available_beds[bed_types[bed_type_id].name] = bed_availability
     return available_beds if available_beds else {"message": "Bed information not available"}
 
-@app.get("/{hospital_id}/{bed_type_name}")
-async def get_bed_availability_by_type(hospital_id: int, bed_type_name: str):
+@app.get("/{hospital_name}/{bed_type_name}")
+async def get_bed_availability_by_type(hospital_name: int, bed_type_name: str):
     for bed_type_id, bed_type in bed_types.items():
         if bed_type.name == bed_type_name:
-            bed_availability_key = (hospital_id, bed_type_id)
+            bed_availability_key = (hospital_name, bed_type_id)
             if bed_availability_key in bed_availabilities:
                 return bed_availabilities[bed_availability_key]
     return {"message": "Bed information not available"}
